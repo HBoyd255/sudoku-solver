@@ -10,19 +10,32 @@ char *inputSudoku =
     "#98####6#"
     "8###6###3"
     "4##8#3##1"
-    "7##2###6"
+    "7###2###6"
     "#6####28#"
     "###419##5"
     "####8##79";
 
-void printGrid() {
+void printSudoku(char *sudoku) {
+    char cell;
+
     for (uint8_t i = 1; i <= 81; i++) {
-        printf("%2d ", i);
+        cell = sudoku[i - 1];
+
+        if (cell == '#') {
+            cell = ' ';
+        }
+
+        printf("%c", cell);
 
         if (!(i % 9)) {
             printf("\n");
+        } else if (!(i % 3)) {
+            printf("|");
+        }
+        if (i == 27 || i == 54) {
+            printf("---+---+---\n");
         }
     }
 }
 
-void main() { printGrid(); }
+void main() { printGrid(inputSudoku); }
