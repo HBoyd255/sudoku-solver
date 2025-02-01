@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,4 +15,14 @@ char *inputSudoku =
     "###419##5"
     "####8##79";
 
-void main() { printf(inputSudoku); }
+void printGrid() {
+    for (uint8_t i = 1; i <= 81; i++) {
+        printf("%2d ", i);
+
+        if (!(i % 9)) {
+            printf("\n");
+        }
+    }
+}
+
+void main() { printGrid(); }
