@@ -3,6 +3,24 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define ROW_NUMBER(i) i / 9
+#define COLUMN_NUMBER(i) i % 9
+#define GRID_NUMBER(i) ((i / 3) % 3) + ((i / 27) * 3)
+
+typedef struct {
+    uint8_t value;
+    uint8_t fixed;
+
+    uint16_t *rowChecker;
+    uint16_t *columnChecker;
+    uint16_t *gridChecker;
+
+} cell_t;
+
+typedef struct {
+    cell_t cells[81];
+} sudoku_t;
+
 void printSudokuString(char *sudokuString) {
     char cell;
 
@@ -30,7 +48,7 @@ void numberSudokuCells(char *sudoku) {
     // Row number
     printf("Rows\n");
     for (uint8_t i = 0; i < 81; i++) {
-        printf("%2d", i / 9);
+        printf("%2d", ROW_NUMBER(i));
         if (!((i + 1) % 9)) {
             printf("\n");
         }
@@ -39,7 +57,7 @@ void numberSudokuCells(char *sudoku) {
     // Column number
     printf("\nColumns\n");
     for (uint8_t i = 0; i < 81; i++) {
-        printf("%2d", i % 9);
+        printf("%2d", COLUMN_NUMBER(i));
         if (!((i + 1) % 9)) {
             printf("\n");
         }
@@ -48,28 +66,12 @@ void numberSudokuCells(char *sudoku) {
     // Grid number
     printf("\nGrids\n");
     for (uint8_t i = 0; i < 81; i++) {
-        // printf("%2d", (i / 3) % 3);
-        printf("%2d", ((i / 3) % 3) + ((i / 27) * 3));
-
+        printf("%2d", GRID_NUMBER(i));
         if (!((i + 1) % 9)) {
             printf("\n");
         }
     }
 }
-
-typedef struct {
-    uint8_t value;
-    uint8_t fixed;
-
-    uint16_t *rowChecker;
-    uint16_t *columnChecker;
-    uint16_t *gridChecker;
-
-} cell_t;
-
-typedef struct {
-    cell_t cells[81];
-} sudoku_t;
 
 #define CREATE_SUDOKU
 
@@ -88,6 +90,5 @@ void main() {
 
     static sudoku_t sudoku;
 
-    printSudokuString(inputSudoku);
-
+    numberSudokuCells(inputSudoku);
 }
