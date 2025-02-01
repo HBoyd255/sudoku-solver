@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-void printSudoku(char *sudoku) {
+void printSudokuString(char *sudokuString) {
     char cell;
 
     for (uint8_t i = 1; i < 82; i++) {
-        cell = sudoku[i - 1];
+        cell = sudokuString[i - 1];
 
         if (cell == '#') {
             cell = ' ';
@@ -57,6 +57,22 @@ void numberSudokuCells(char *sudoku) {
     }
 }
 
+typedef struct {
+    uint8_t value;
+    uint8_t fixed;
+
+    uint16_t *rowChecker;
+    uint16_t *columnChecker;
+    uint16_t *gridChecker;
+
+} cell_t;
+
+typedef struct {
+    cell_t cells[81];
+} sudoku_t;
+
+#define CREATE_SUDOKU
+
 void main() {
     // https://en.wikipedia.org/wiki/sudoku
     static char *inputSudoku =
@@ -70,5 +86,8 @@ void main() {
         "###419##5"
         "####8##79";
 
-    numberSudokuCells(inputSudoku);
+    static sudoku_t sudoku;
+
+    printSudokuString(inputSudoku);
+
 }
