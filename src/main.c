@@ -203,8 +203,11 @@ static uint8_t isValid(cell_t *cell) {
 
 static uint8_t solveSudoku(sudoku_t *sudoku) {
     int8_t index = 0;
+    uint32_t iterations = 0;
 
     while (1) {
+        iterations++;
+
         cell_t *cell = sudoku->nonClueCells_ptrarr[index];
 
         cell->value++;
@@ -213,7 +216,7 @@ static uint8_t solveSudoku(sudoku_t *sudoku) {
             cell->value = 0;
             index--;
             if (index < 0) {
-                return 1;  // Failed to find a solution to the Sudoku.
+                break;
             }
             cell_t *prevCell = sudoku->nonClueCells_ptrarr[index];
             removeCheckFromCell(prevCell);
@@ -223,6 +226,7 @@ static uint8_t solveSudoku(sudoku_t *sudoku) {
         }
 
         if (index >= sudoku->nonClueCount) {
+            printf("Iterations: %d\n\n", iterations);
             return 0;  // Found a solution to the Sudoku.
         }
     }
@@ -241,11 +245,21 @@ int main() {
         "###419##5"
         "####8##79";
 
-    // printSudokuString(inputSudokuString);
+    // https://en.wikipedia.org/wiki/Sudoku_solving_algorithms#/media/File:Sudoku_puzzle_hard_for_brute_force.svg
+    static char *hardSudokuString =
+        "#########"
+        "#####3#85"
+        "##1#2####"
+        "###5#7###"
+        "##4###1##"
+        "#9#######"
+        "5######73"
+        "##2#1####"
+        "####4###9";
 
     static sudoku_t sudoku;
 
-    initialiseSudoku(&sudoku, inputSudokuString);
+    initialiseSudoku(&sudoku, hardSudokuString);
 
     printSudokuSimple(&sudoku);
 
