@@ -222,7 +222,7 @@ static uint8_t solveSudoku(sudoku_t *sudoku) {
             addCheckToCell(cell);
         }
 
-        if (index >= 51) {
+        if (index >= sudoku->nonClueCount) {
             return 0;  // Found a solution to the Sudoku.
         }
     }
