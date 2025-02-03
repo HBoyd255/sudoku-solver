@@ -1,7 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 /**
  * @brief A struct to represent a cell within a Sudoku. This stores the value of
@@ -185,9 +184,51 @@ static void initialiseSudoku(sudoku_t *sudoku, char *sudokuString) {
     }
 }
 
-int main() {
-    system("cls");
+static void addCheckToCell(cell_t *cell) {
+    *cell->rowCheck_ptr |= checkMasks[cell->value];
+    *cell->columnCheck_ptr |= checkMasks[cell->value];
+    *cell->gridCheck_ptr |= checkMasks[cell->value];
+}
+static void removeCheckFromCell(cell_t *cell) {
+    *cell->rowCheck_ptr &= ~checkMasks[cell->value];
+    *cell->columnCheck_ptr &= ~checkMasks[cell->value];
+    *cell->gridCheck_ptr &= ~checkMasks[cell->value];
+}
+static uint8_t isValid(cell_t *cell) {
+    uint16_t combinedChecks =
+        (*cell->rowCheck_ptr | *cell->columnCheck_ptr | *cell->gridCheck_ptr);
 
+    return !(combinedChecks & checkMasks[cell->value]);
+}
+
+static uint8_t solveSudoku(sudoku_t *sudoku) {
+    int8_t index = 0;
+
+    while (1) {
+        cell_t *cell = sudoku->nonClueCells_ptrarr[index];
+
+        cell->value++;
+
+        if (cell->value == 10) {
+            cell->value = 0;
+            index--;
+            if (index < 0) {
+                return 1;  // Failed to find a solution to the Sudoku.
+            }
+            cell_t *prevCell = sudoku->nonClueCells_ptrarr[index];
+            removeCheckFromCell(prevCell);
+        } else if (isValid(cell)) {
+            index++;
+            addCheckToCell(cell);
+        }
+
+        if (index >= 51) {
+            return 0;  // Found a solution to the Sudoku.
+        }
+    }
+}
+
+int main() {
     // https://en.wikipedia.org/wiki/sudoku
     static char *inputSudokuString =
         "53##7####"
@@ -206,9 +247,15 @@ int main() {
 
     initialiseSudoku(&sudoku, inputSudokuString);
 
-    // printf("\n\n");
+    printSudokuSimple(&sudoku);
 
-    // printSudoku(&sudoku);
+    printf("\nSolving\n\n");
+
+    uint8_t fail = solveSudoku(&sudoku);
+
+    if (fail) {
+        printf("Failed to find a solution");
+    }
 
     printSudokuSimple(&sudoku);
 }
